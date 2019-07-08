@@ -18,7 +18,7 @@
 4. cd target
 5. java -jar orderBookApp-0.0.1-SNAPSHOT.jar
 
-####Notes:
+#### Notes:
     Default Configurations:
         Application port: 8090
         Influx DB: 8086
@@ -31,7 +31,7 @@
 2. **POST** ``` http://localhost:8080/marketDepth/{symbol} ```
  Get the market depth of a particular symbol
 
-####Basic WorkFlow
+#### Basic WorkFlow
     1. When application boots up, it will create a database and load all the crypto pairs to db.
     2. When a pair is selected from the ui, the current snapshot of the pair is taken using binance api
        and stored in the local cache and the db. Also, the depth event will be started for the pair
