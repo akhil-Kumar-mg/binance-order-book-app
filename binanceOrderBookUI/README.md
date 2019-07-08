@@ -5,6 +5,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 1. NodeJs
 
 ## Set up
+
 1.Go to the cloned folder
 2. cd binanceOrderBookUI
 3. npm install
