@@ -16,7 +16,7 @@ public class MarketDepthCacheUtil {
 
     public static NavigableMap<BigDecimal, BigDecimal> getMarketDepthCacheForAsksBySymbol(String symbol) {
         if(marketDepthCacheForAsks.get(symbol) == null) {
-            marketDepthCacheForAsks.put(symbol, new TreeMap<>(Comparator.reverseOrder()));
+            marketDepthCacheForAsks.put(symbol, new TreeMap<>(Comparator.naturalOrder()));
             return marketDepthCacheForAsks.get(symbol);
         }
         return marketDepthCacheForAsks.get(symbol);
