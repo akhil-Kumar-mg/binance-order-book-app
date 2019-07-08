@@ -26,8 +26,7 @@ class App extends Component {
     },
     cryptoPairs: [],
     marketDepthAsks: {},
-    marketDepthBids: {},
-    webSocketRenderingStarted: false
+    marketDepthBids: {}
   };
 
   componentDidMount() {
@@ -39,8 +38,7 @@ class App extends Component {
       ApiService.getMarketDepth(response.data[0].symbol).then(response => {
         this.setState({
           marketDepthAsks: response.data.marketDepthForAsks,
-          marketDepthBids: response.data.marketDepthForBids,
-          webSocketRenderingStarted: true
+          marketDepthBids: response.data.marketDepthForBids
         });
       });
     });
@@ -63,8 +61,7 @@ class App extends Component {
       cryptoPairs,
       selectedSymbol,
       marketDepthAsks,
-      marketDepthBids,
-      webSocketRenderingStarted
+      marketDepthBids
     } = this.state;
     return (
       <div>
@@ -207,29 +204,26 @@ class App extends Component {
         </Grid>
 
         <div>
-          if(webSocketRenderingStarted)
-          {
-            <SockJsClient
-              url="http://localhost:8080/orderBook-ws"
-              topics={["/topic/all"]}
-              onMessage={msg => {
-                if (msg.symbol === selectedSymbol.symbol) {
-                  console.log(msg);
-                  this.setState({
-                    ...selectedSymbol,
-                    marketDepthAsks: msg.marketDepthForAsks,
-                    marketDepthBids: msg.marketDepthForBids
-                  });
-                }
-              }}
-              onConnect={() => {
-                console.log("connected");
-              }}
-              ref={client => {
-                this.clientRef = client;
-              }}
-            />
-          }
+          <SockJsClient
+            url="http://localhost:8090/orderBook-ws"
+            topics={["/topic/all"]}
+            onMessage={msg => {
+              if (msg.symbol === selectedSymbol.symbol) {
+                console.log(msg);
+                this.setState({
+                  ...selectedSymbol,
+                  marketDepthAsks: msg.marketDepthForAsks,
+                  marketDepthBids: msg.marketDepthForBids
+                });
+              }
+            }}
+            onConnect={() => {
+              console.log("connected");
+            }}
+            ref={client => {
+              this.clientRef = client;
+            }}
+          />
         </div>
       </div>
     );
