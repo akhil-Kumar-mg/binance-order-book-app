@@ -3,6 +3,7 @@ package com.mstakx.orderBookApp.service;
 import com.mstakx.orderBookApp.config.InfluxDbConfig;
 import com.mstakx.orderBookApp.dao.CryptoPairDao;
 import com.mstakx.orderBookApp.model.CryptoPair;
+import com.mstakx.orderBookApp.model.CryptoPairDTO;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
@@ -38,7 +39,7 @@ public class OrderBookService {
         connection.write(batchPoints);
     }
 
-    public List<CryptoPair> getAllCryptoPairs() {
+    public List<CryptoPairDTO> getAllCryptoPairs() {
         return cryptoPairDao.getAllCryptoPairs();
     }
 }

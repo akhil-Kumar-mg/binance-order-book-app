@@ -1,6 +1,6 @@
 package com.mstakx.orderBookApp.controller;
 
-import com.mstakx.orderBookApp.model.CryptoPair;
+import com.mstakx.orderBookApp.model.CryptoPairDTO;
 import com.mstakx.orderBookApp.service.OrderBookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ public class CryptoPairRestController {
 
     @GetMapping(value = "cryptoPair")
     public ResponseEntity getAllCryptoPair() {
-        List<CryptoPair> cryptoPairs = orderBookService.getAllCryptoPairs();
+        List<CryptoPairDTO> cryptoPairs = orderBookService.getAllCryptoPairs();
         if (cryptoPairs.size() != 0) {
             return new ResponseEntity(cryptoPairs, HttpStatus.OK);
         }
