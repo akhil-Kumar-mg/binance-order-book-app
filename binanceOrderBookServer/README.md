@@ -1,6 +1,6 @@
 # Binance-order-book-app
 
-#### This application has been written using java Spring Boot.
+#### This application is written using java Spring Boot.
 
 ##Requirements
 
@@ -14,7 +14,7 @@
 1. Go to the cloned folder
 2. cd binanceOrderBookServer
 3. mvn clean install
-    3. if the build failed with binance dependency, please clone "https://github.com/binance-exchange/binance-java-api.git" in your local repository and do mvn install.
+    1. if the build failed with binance dependency, please clone "https://github.com/binance-exchange/binance-java-api.git" in your local repository and do mvn install.
 4. cd target
 5. java -jar orderBookApp-0.0.1-SNAPSHOT.jar
 
