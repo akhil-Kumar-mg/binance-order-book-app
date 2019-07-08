@@ -2,7 +2,6 @@ package com.mstakx.orderBookApp.service;
 
 import com.mstakx.orderBookApp.config.InfluxDbConfig;
 import com.mstakx.orderBookApp.dao.CryptoPairDao;
-import com.mstakx.orderBookApp.model.CryptoPair;
 import com.mstakx.orderBookApp.model.CryptoPairDTO;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.BatchPoints;
@@ -30,7 +29,7 @@ public class OrderBookService {
                 .build();
         int counter = 0;
         for (String btcPair : btcPairList) {
-            Point point = Point.measurement("btc-pair")
+            Point point = Point.measurement("crypto_pair")
                     .time(System.currentTimeMillis() + counter++, TimeUnit.MILLISECONDS)
                     .addField("symbol", btcPair)
                     .build();

@@ -5,7 +5,7 @@ import org.influxdb.annotation.Measurement;
 
 import java.time.Instant;
 
-@Measurement(name = "btc-pair")
+@Measurement(name = "crypto_pair")
 public class CryptoPair {
 
     @Column(name = "time")

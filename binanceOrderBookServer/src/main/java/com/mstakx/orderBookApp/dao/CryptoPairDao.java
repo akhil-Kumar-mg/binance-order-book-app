@@ -21,7 +21,7 @@ public class CryptoPairDao {
 
     public List<CryptoPairDTO> getAllCryptoPairs() {
         InfluxDB connection = influxDbConfig.getConnection();
-        QueryResult queryResult = connection.query(new Query("Select * from \"btc-pair\"", "orderBook"));
+        QueryResult queryResult = connection.query(new Query("Select * from \"crypto_pair\"", "orderBook"));
         InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
         List<CryptoPair> cryptoPairList = resultMapper.toPOJO(queryResult, CryptoPair.class);
         List<CryptoPairDTO> cryptoPairResponse = new ArrayList<>();

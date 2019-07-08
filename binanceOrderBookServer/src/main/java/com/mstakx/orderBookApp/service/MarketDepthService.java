@@ -11,6 +11,7 @@ import com.mstakx.orderBookApp.util.MarketDepthCacheUtil;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.BatchPoints;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ import java.math.BigDecimal;
 import java.util.NavigableMap;
 
 @Service
-public class MarketService {
+public class MarketDepthService {
 
     @Autowired
     InfluxDbConfig influxDbConfig;
@@ -28,6 +29,9 @@ public class MarketService {
 
     @Autowired
     MarkerDepthDao markerDepthDao;
+
+    @Value("${orderbook.cache.size}")
+    private Integer cacheLimit;
 
     /*
         it will fetch the current market depth of the given pair and trigger depth listener for the same
@@ -74,12 +78,6 @@ public class MarketService {
                 BatchPoints batchPoints = markerDepthDao.initiateBatchPoint();
                 NavigableMap<BigDecimal, BigDecimal> asks = MarketDepthCacheUtil.getMarketDepthCacheForAsksBySymbol(symbol);
                 NavigableMap<BigDecimal, BigDecimal> bids = MarketDepthCacheUtil.getMarketDepthCacheForBidsBySymbol(symbol);
-                if(asks.size() >= 30) {
-                    asks.clear();
-                }
-                if(bids.size() >= 30) {
-                    bids.clear();
-                }
                 for (OrderBookEntry orderBookDelta : res.getAsks()) {
                     BigDecimal price = new BigDecimal(orderBookDelta.getPrice());
                     BigDecimal qty = new BigDecimal(orderBookDelta.getQty());
