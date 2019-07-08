@@ -1,6 +1,8 @@
 package com.mstakx.orderBookApp.service;
 
 import com.mstakx.orderBookApp.config.InfluxDbConfig;
+import com.mstakx.orderBookApp.dao.CryptoPairDao;
+import com.mstakx.orderBookApp.model.CryptoPair;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
@@ -15,6 +17,9 @@ public class OrderBookService {
 
     @Autowired
     InfluxDbConfig influxDbConfig;
+
+    @Autowired
+    CryptoPairDao cryptoPairDao;
 
     public void loadBtcPair(List<String> btcPairList) {
         InfluxDB connection = influxDbConfig.getInfluxDBInstance();
@@ -31,5 +36,9 @@ public class OrderBookService {
             batchPoints.point(point);
         }
         connection.write(batchPoints);
+    }
+
+    public List<CryptoPair> getAllCryptoPairs() {
+        return cryptoPairDao.getAllCryptoPairs();
     }
 }
