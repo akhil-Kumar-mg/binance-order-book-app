@@ -17,4 +17,9 @@ public class BinanceApiUtil {
     public static BinanceApiWebSocketClient getBinanceWebSocketClient() {
         return factory.newWebSocketClient();
     }
+
+    public static String getLastPriceBySymbol(String symbol) {
+        BinanceApiRestClient client = factory.newRestClient();
+        return client.get24HrPriceStatistics(symbol).getLastPrice();
+    }
 }
