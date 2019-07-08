@@ -7,115 +7,229 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
 import SockJsClient from "react-stomp";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import ApiService from "./service/ApiService";
 
 import "./App.css";
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9)
-];
-
 class App extends Component {
+  state = {
+    symbol: "",
+    selectedSymbol: {
+      symbol: "Symbol 1"
+    },
+    cryptoPairs: [],
+    marketDepthAsks: {},
+    marketDepthBids: {},
+    webSocketRenderingStarted: false
+  };
+
+  componentDidMount() {
+    ApiService.getCryptoPairs().then(response => {
+      this.setState({
+        cryptoPairs: response.data,
+        selectedSymbol: response.data[0]
+      });
+      ApiService.getMarketDepth(response.data[0].symbol).then(response => {
+        this.setState({
+          marketDepthAsks: response.data.marketDepthForAsks,
+          marketDepthBids: response.data.marketDepthForBids,
+          webSocketRenderingStarted: true
+        });
+      });
+    });
+  }
+
+  handleChange = (event, data) => {
+    const { cryptoPairs } = this.state;
+    ApiService.getMarketDepth(cryptoPairs[data.key].symbol).then(response => {
+      this.setState({
+        marketDepthAsks: response.data.marketDepthForAsks,
+        marketDepthBids: response.data.marketDepthForBids,
+        selectedSymbol: cryptoPairs[data.key]
+      });
+    });
+  };
+
   render() {
     const classes = this.props.classes;
+    const {
+      cryptoPairs,
+      selectedSymbol,
+      marketDepthAsks,
+      marketDepthBids,
+      webSocketRenderingStarted
+    } = this.state;
     return (
       <div>
         <AppBar position="static" color="default">
-          <Toolbar>
-            <Typography variant="h6" color="inherit">
-              Photos
-            </Typography>
+          <Toolbar
+            style={{ margin: "auto", paddingLeft: 30, paddingRight: 30 }}
+          >
+            <span style={{ paddingRight: 10, fontSize: 20 }}>
+              Crypto Pair :{" "}
+            </span>
+            <Select value={selectedSymbol.symbol} onChange={this.handleChange}>
+              {cryptoPairs.map((crypto, index) => {
+                return (
+                  <MenuItem key={index} value={crypto.symbol}>
+                    {crypto.symbol}
+                  </MenuItem>
+                );
+              })}
+            </Select>
           </Toolbar>
         </AppBar>
 
-        <div>
-          <SockJsClient
-            url="http://localhost:8080/orderBook-ws"
-            topics={["/topic/all"]}
-            onMessage={msg => {
-              console.log(msg);
-            }}
-            onConnect={() => {
-              console.log("connected");
-            }}
-            ref={client => {
-              this.clientRef = client;
-            }}
-          />
-        </div>
-        <div>
-          <Button variant="contained" className={classes.button}>
-            Asks
-          </Button>
-          <div className="table_box">
-            <div className={classes.root}>
-              <Paper className={classes.paper}>
-                <Table className={classes.table} size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Dessert (100g serving)</TableCell>
-                      <TableCell align="right">Calories</TableCell>
-                      <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map(row => (
-                      <TableRow key={row.name}>
-                        <TableCell component="th" scope="row">
-                          {row.name}
+        <Grid container spacing={3} className="mainGrid">
+          <Grid item xs={6} className="subGrid">
+            <Button variant="contained" className={classes.button}>
+              Asks
+            </Button>
+            <div className="table_box">
+              <div className={classes.root}>
+                <Paper className={classes.paper}>
+                  <Table className={classes.table}>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>
+                          Price(
+                          {selectedSymbol.symbol.substr(
+                            selectedSymbol.symbol.length - 3,
+                            selectedSymbol.symbol.length
+                          )}
+                          )
                         </TableCell>
-                        <TableCell align="right">{row.calories}</TableCell>
-                        <TableCell align="right">{row.fat}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </Paper>
-            </div>
-          </div>
-          <Divider />
-          <Button variant="contained" className={classes.button}>
-            Bids
-          </Button>
-          <div className="table_box">
-            <div className={classes.root}>
-              <Paper className={classes.paper}>
-                <Table className={classes.table} size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Dessert (100g serving)</TableCell>
-                      <TableCell align="right">Calories</TableCell>
-                      <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map(row => (
-                      <TableRow key={row.name}>
-                        <TableCell component="th" scope="row">
-                          {row.name}
+                        <TableCell align="right">
+                          Amount(
+                          {selectedSymbol.symbol.substr(
+                            0,
+                            selectedSymbol.symbol.length - 3
+                          )}
+                          )
                         </TableCell>
-                        <TableCell align="right">{row.calories}</TableCell>
-                        <TableCell align="right">{row.fat}</TableCell>
+                        <TableCell align="right">
+                          Total(
+                          {selectedSymbol.symbol.substr(
+                            selectedSymbol.symbol.length - 3,
+                            selectedSymbol.symbol.length
+                          )}
+                          )
+                        </TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </Paper>
+                    </TableHead>
+                    <TableBody>
+                      {Object.keys(marketDepthAsks).map((row, index) => {
+                        return (
+                          <TableRow key={index}>
+                            <TableCell component="th" scope="row">
+                              {row}
+                            </TableCell>
+                            <TableCell align="right">
+                              {marketDepthAsks[row]}
+                            </TableCell>
+                            <TableCell align="right">
+                              {row * marketDepthAsks[row]}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </Paper>
+              </div>
             </div>
-          </div>
+          </Grid>
+          <Grid item xs={6}>
+            <Button variant="contained" className={classes.button}>
+              Bids
+            </Button>
+            <div className="table_box">
+              <div className={classes.root}>
+                <Paper className={classes.paper}>
+                  <Table className={classes.table}>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>
+                          Price(
+                          {selectedSymbol.symbol.substr(
+                            selectedSymbol.symbol.length - 3,
+                            selectedSymbol.symbol.length
+                          )}
+                          )
+                        </TableCell>
+                        <TableCell align="right">
+                          Amount(
+                          {selectedSymbol.symbol.substr(
+                            0,
+                            selectedSymbol.symbol.length - 3
+                          )}
+                          )
+                        </TableCell>
+                        <TableCell align="right">
+                          Total(
+                          {selectedSymbol.symbol.substr(
+                            selectedSymbol.symbol.length - 3,
+                            selectedSymbol.symbol.length
+                          )}
+                          )
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {Object.keys(marketDepthBids).map((row, index) => {
+                        return (
+                          <TableRow key={index}>
+                            <TableCell component="th" scope="row">
+                              {row}
+                            </TableCell>
+                            <TableCell align="right">
+                              {marketDepthBids[row]}
+                            </TableCell>
+                            <TableCell align="right">
+                              {row * marketDepthBids[row]}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </Paper>
+              </div>
+            </div>
+          </Grid>
+        </Grid>
+
+        <div>
+          if(webSocketRenderingStarted)
+          {
+            <SockJsClient
+              url="http://localhost:8080/orderBook-ws"
+              topics={["/topic/all"]}
+              onMessage={msg => {
+                if (msg.symbol === selectedSymbol.symbol) {
+                  console.log(msg);
+                  this.setState({
+                    ...selectedSymbol,
+                    marketDepthAsks: msg.marketDepthForAsks,
+                    marketDepthBids: msg.marketDepthForBids
+                  });
+                }
+              }}
+              onConnect={() => {
+                console.log("connected");
+              }}
+              ref={client => {
+                this.clientRef = client;
+              }}
+            />
+          }
         </div>
       </div>
     );

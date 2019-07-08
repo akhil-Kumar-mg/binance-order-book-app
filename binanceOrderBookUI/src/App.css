@@ -1,4 +1,16 @@
 .table_box {
-  width: 60%;
-  margin-left: 20%;
+  margin: 20px;
+}
+
+.mainGrid {
+  height: calc(100vh - 72px);
+  margin: 0px !important;
+  width: 100% !important;
+}
+.subGrid {
+  border-right: 1px solid black;
+}
+
+body{
+  margin:0px;
 }
