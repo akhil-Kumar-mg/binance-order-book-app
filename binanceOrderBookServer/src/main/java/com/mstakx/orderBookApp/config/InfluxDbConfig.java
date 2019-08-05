@@ -32,7 +32,7 @@ public class InfluxDbConfig {
             throw new DBConnectionFailureException("DB Connection Failed", ex);
         }
 
-        influxDB.setLogLevel(InfluxDB.LogLevel.NONE);
+        influxDB.setLogLevel(InfluxDB.LogLevel.BASIC);
         return influxDB;
     }
 

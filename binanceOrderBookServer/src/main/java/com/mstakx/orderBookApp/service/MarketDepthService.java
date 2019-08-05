@@ -8,6 +8,7 @@ import com.mstakx.orderBookApp.dao.MarketDepthDao;
 import com.mstakx.orderBookApp.dto.MarketDepthResponse;
 import com.mstakx.orderBookApp.measurements.Orders;
 import com.mstakx.orderBookApp.measurements.PriceHistory;
+import com.mstakx.orderBookApp.transaction.sell.OrderSell;
 import com.mstakx.orderBookApp.util.BinanceApiUtil;
 import com.mstakx.orderBookApp.util.MarketDepthCacheUtil;
 import org.influxdb.InfluxDB;
@@ -28,6 +29,9 @@ public class MarketDepthService {
 
     @Autowired
     MarketDepthDao marketDepthDao;
+
+    @Autowired
+    OrderSell orderSell;
 
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
@@ -102,6 +106,8 @@ public class MarketDepthService {
                     BigDecimal currentPrice = bids.firstKey().add(asks.firstKey()).divide(new BigDecimal(2));
                     marketDepthDao.setPointsForCurrentPrice(symbol, batchPoints, currentPrice);
                 }
+//                orderSell.sell();
+
                 marketDepthDao.executeBatch(batchPoints);
                 MarketDepthCacheUtil.setCurrentUpdatedId(symbol, currentUpdatedId);
                 simpMessagingTemplate.convertAndSend("/topic/all", getMarkerResponse(symbol));

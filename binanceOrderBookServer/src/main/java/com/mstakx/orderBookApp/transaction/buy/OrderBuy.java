@@ -41,7 +41,7 @@ public class OrderBuy {
             BigDecimal sellPrice = currentPrice.multiply(new BigDecimal(0.05)).add(currentPrice);
             BigDecimal stopLoss = currentPrice.subtract(currentPrice.multiply(new BigDecimal(0.05)));
             BatchPoints batchPoints = marketDepthDao.initiateBatchPoint();
-            marketDepthDao.setPointsForOrderHistory(symbol, batchPoints, buyPrice, sellPrice, new BigDecimal(BigInteger.ZERO), "ALIVE", stopLoss);
+            marketDepthDao.setPointsForOrderHistory(null, symbol, batchPoints, buyPrice, sellPrice, new BigDecimal(BigInteger.ZERO), "ALIVE", stopLoss);
             marketDepthDao.executeBatch(batchPoints);
         }
     }

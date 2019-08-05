@@ -78,8 +78,8 @@ public class MarketDepthDao {
         }
         Point point = Point.measurement(measurement)
                 .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-                .addField("symbol", symbol)
                 .addField("order_nature", orderNature)
+                .addField("symbol", symbol)
                 .addField("price(BTC)", new BigDecimal(orderBookEntry.getPrice()))
                 .addField("quantity", new BigDecimal(orderBookEntry.getQty()))
                 .build();
@@ -113,11 +113,11 @@ public class MarketDepthDao {
         }
     }
 
-    public void setPointsForOrderHistory(String symbol, BatchPoints batchPoints, BigDecimal buyPrice,
+    public void setPointsForOrderHistory(Long time, String symbol, BatchPoints batchPoints, BigDecimal buyPrice,
                                          BigDecimal sellPrice, BigDecimal profit, String orderStatus, BigDecimal stopLoss) {
 
         Point point = Point.measurement("order_history")
-                .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+                .time(time == null ? System.currentTimeMillis() : time/1000000, TimeUnit.MILLISECONDS)
                 .addField("symbol", symbol)
                 .addField("order_status", orderStatus)
                 .addField("buy_price", buyPrice)
@@ -173,7 +173,7 @@ public class MarketDepthDao {
 
     public List<Orders> getAllActiveOrders() {
         InfluxDB connection = InfluxDbConfig.getConnection();
-        QueryResult queryResult = connection.query(new Query("SELECT * FROM order_history where order_status=ALIVE", "trading_DB"));
+        QueryResult queryResult = connection.query(new Query("SELECT * FROM order_history where order_status='ALIVE'", "trading_DB"));
         InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
         return resultMapper.toPOJO(queryResult, com.mstakx.orderBookApp.measurements.Orders.class);
 
