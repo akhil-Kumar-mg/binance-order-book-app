@@ -1,6 +1,6 @@
 package com.mstakx.orderBookApp.controller;
 
-import com.mstakx.orderBookApp.model.MarketDepthResponse;
+import com.mstakx.orderBookApp.dto.MarketDepthResponse;
 import com.mstakx.orderBookApp.service.MarketDepthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

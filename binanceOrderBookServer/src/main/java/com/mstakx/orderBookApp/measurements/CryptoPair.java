@@ -1,4 +1,4 @@
-package com.mstakx.orderBookApp.model;
+package com.mstakx.orderBookApp.measurements;
 
 import org.influxdb.annotation.Column;
 import org.influxdb.annotation.Measurement;

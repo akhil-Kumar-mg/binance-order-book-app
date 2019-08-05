@@ -1,6 +1,6 @@
 package com.mstakx.orderBookApp.controller;
 
-import com.mstakx.orderBookApp.model.CryptoPairDTO;
+import com.mstakx.orderBookApp.dto.CryptoPairDTO;
 import com.mstakx.orderBookApp.service.OrderBookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

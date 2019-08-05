@@ -1,7 +1,7 @@
 package com.mstakx.orderBookApp.service;
 
 import com.mstakx.orderBookApp.BinanceAppApplication;
-import com.mstakx.orderBookApp.model.CryptoPairDTO;
+import com.mstakx.orderBookApp.dto.CryptoPairDTO;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,8 +11,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {BinanceAppApplication.class})

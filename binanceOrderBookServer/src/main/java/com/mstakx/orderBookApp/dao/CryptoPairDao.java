@@ -1,8 +1,8 @@
 package com.mstakx.orderBookApp.dao;
 
 import com.mstakx.orderBookApp.config.InfluxDbConfig;
-import com.mstakx.orderBookApp.model.CryptoPair;
-import com.mstakx.orderBookApp.model.CryptoPairDTO;
+import com.mstakx.orderBookApp.measurements.CryptoPair;
+import com.mstakx.orderBookApp.dto.CryptoPairDTO;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
@@ -20,8 +20,8 @@ public class CryptoPairDao {
     InfluxDbConfig influxDbConfig;
 
     public List<CryptoPairDTO> getAllCryptoPairs() {
-        InfluxDB connection = influxDbConfig.getConnection();
-        QueryResult queryResult = connection.query(new Query("Select * from \"crypto_pair\"", "orderBook"));
+        InfluxDB connection = influxDbConfig.createConnection();
+        QueryResult queryResult = connection.query(new Query("Select * from \"crypto_pair\"", "trading_DB"));
         InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
         List<CryptoPair> cryptoPairList = resultMapper.toPOJO(queryResult, CryptoPair.class);
         List<CryptoPairDTO> cryptoPairResponse = new ArrayList<>();
@@ -31,5 +31,16 @@ public class CryptoPairDao {
             cryptoPairResponse.add(cryptoPairDTO);
         });
         return cryptoPairResponse;
+    }
+
+    public String getLastAddedBtcPair() {
+        InfluxDB connection = influxDbConfig.getConnection();
+        QueryResult queryResult = connection.query(new Query("SELECT * FROM crypto_pair GROUP BY * ORDER BY DESC LIMIT 1", "trading_DB"));
+        InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
+        List<CryptoPair> cryptoPair = resultMapper.toPOJO(queryResult, CryptoPair.class);
+        if (cryptoPair.size() > 0) {
+            return cryptoPair.get(0).getSymbol();
+        }
+        return null;
     }
 }

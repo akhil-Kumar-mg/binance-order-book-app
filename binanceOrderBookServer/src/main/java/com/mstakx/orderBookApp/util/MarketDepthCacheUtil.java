@@ -1,5 +1,7 @@
 package com.mstakx.orderBookApp.util;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -8,9 +10,12 @@ import java.util.TreeMap;
 
 public class MarketDepthCacheUtil {
 
+    @Autowired
+
     private static HashMap<String,NavigableMap<BigDecimal,BigDecimal>> marketDepthCacheForAsks = new HashMap<>();
     private static HashMap<String,NavigableMap<BigDecimal,BigDecimal>> marketDepthCacheForBids = new HashMap<>();
     private static HashMap<String,Long> updatedIdMap= new HashMap<>();
+    private static HashMap<String, BigDecimal> currentPriceMap = new HashMap<>();
 
     private MarketDepthCacheUtil(){}
 
@@ -39,4 +44,11 @@ public class MarketDepthCacheUtil {
         updatedIdMap.put(symbol,updatedId);
     }
 
+    public static BigDecimal getCurrentPriceBySymbol(String symbol) {
+        return currentPriceMap.get(symbol);
+    }
+
+    public static void setCurrentPriceBySymbol(String symbol, BigDecimal value) {
+        currentPriceMap.put(symbol,value);
+    }
 }

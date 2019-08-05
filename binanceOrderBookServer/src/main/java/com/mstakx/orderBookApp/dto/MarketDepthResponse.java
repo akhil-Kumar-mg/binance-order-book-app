@@ -1,4 +1,4 @@
-package com.mstakx.orderBookApp.model;
+package com.mstakx.orderBookApp.dto;
 
 import java.math.BigDecimal;
 import java.util.NavigableMap;

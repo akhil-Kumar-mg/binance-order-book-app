@@ -2,7 +2,7 @@ package com.mstakx.orderBookApp.service;
 
 import com.mstakx.orderBookApp.config.InfluxDbConfig;
 import com.mstakx.orderBookApp.dao.CryptoPairDao;
-import com.mstakx.orderBookApp.model.CryptoPairDTO;
+import com.mstakx.orderBookApp.dto.CryptoPairDTO;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
@@ -16,15 +16,12 @@ import java.util.concurrent.TimeUnit;
 public class OrderBookService {
 
     @Autowired
-    InfluxDbConfig influxDbConfig;
-
-    @Autowired
     CryptoPairDao cryptoPairDao;
 
     public void loadBtcPair(List<String> btcPairList) {
-        InfluxDB connection = influxDbConfig.getInfluxDBInstance();
+        InfluxDB connection = InfluxDbConfig.getConnection();
         BatchPoints batchPoints = BatchPoints
-                .database("orderBook")
+                .database("trading_DB")
                 .retentionPolicy("defaultPolicy")
                 .build();
         int counter = 0;
@@ -41,4 +38,9 @@ public class OrderBookService {
     public List<CryptoPairDTO> getAllCryptoPairs() {
         return cryptoPairDao.getAllCryptoPairs();
     }
+
+    public String getLastAddedBtcPair() {
+        return cryptoPairDao.getLastAddedBtcPair();
+    }
+
 }

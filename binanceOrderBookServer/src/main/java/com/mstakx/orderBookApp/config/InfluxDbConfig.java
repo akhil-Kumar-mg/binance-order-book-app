@@ -18,12 +18,12 @@ public class InfluxDbConfig {
     @Value("${spring.influx.password}")
     private String influxDbPassword;
 
-    private InfluxDB influxDB;
+    private static InfluxDB influxDB;
 
     /*
-        Gets the influx DB connection
+      Creates the influx DB connection
      */
-    public InfluxDB getConnection() {
+    public InfluxDB createConnection() {
         influxDB = InfluxDBFactory.connect(influxDbUrl, influxDbUsername, influxDbPassword);
 
         try {
@@ -32,12 +32,12 @@ public class InfluxDbConfig {
             throw new DBConnectionFailureException("DB Connection Failed", ex);
         }
 
-        influxDB.setLogLevel(InfluxDB.LogLevel.BASIC);
+        influxDB.setLogLevel(InfluxDB.LogLevel.NONE);
         return influxDB;
     }
 
-    public InfluxDB getInfluxDBInstance() {
-        return this.influxDB;
+    public static InfluxDB getConnection() {
+        return influxDB;
     }
 
 }
