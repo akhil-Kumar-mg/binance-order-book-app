@@ -15,6 +15,4 @@ public class SellOrderScheduler {
     public void triggerSellEvent() {
         orderSell.sell();
     }
-
-
 }

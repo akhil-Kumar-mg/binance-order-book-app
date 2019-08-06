@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.temporal.ChronoField;
 import java.util.List;
 
 @Service
@@ -39,9 +38,19 @@ public class OrderSell {
                         new BigDecimal(order.getSellPrice()), currentPrice.subtract(new BigDecimal(order.getBuyPrice())),
                         "EXECUTED", new BigDecimal(order.getStopLoss()));
             } else {
-                marketDepthDao.setPointsForOrderHistory(order.getTime().getEpochSecond()*1000000000 + order.getTime().getNano(), order.getSymbol(), batchPoints, new BigDecimal(order.getBuyPrice()),
-                        new BigDecimal(order.getSellPrice()), currentPrice.subtract(new BigDecimal(order.getBuyPrice())),
-                        "ALIVE", new BigDecimal(order.getStopLoss()));
+                Long time = order.getTime().getEpochSecond()*1000000000 + order.getTime().getNano();
+                if( time+ 10000000000l < System.currentTimeMillis() * 1000000 ) {
+                    BigDecimal buyPrice = new BigDecimal(order.getBuyPrice());
+                    sellPrice = buyPrice.multiply(new BigDecimal(0.01)).add(buyPrice);
+                    marketDepthDao.setPointsForOrderHistory(order.getTime().getEpochSecond()*1000000000 + order.getTime().getNano(), order.getSymbol(), batchPoints, buyPrice,
+                            sellPrice, currentPrice.subtract(buyPrice),
+                            "ALIVE", new BigDecimal(order.getStopLoss()));
+                } else {
+                    marketDepthDao.setPointsForOrderHistory(order.getTime().getEpochSecond()*1000000000 + order.getTime().getNano(), order.getSymbol(), batchPoints, new BigDecimal(order.getBuyPrice()),
+                            new BigDecimal(order.getSellPrice()), currentPrice.subtract(new BigDecimal(order.getBuyPrice())),
+                            "ALIVE", new BigDecimal(order.getStopLoss()));
+                }
+
             }
             marketDepthDao.executeBatch(batchPoints);
         });

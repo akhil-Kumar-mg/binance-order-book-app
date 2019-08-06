@@ -29,6 +29,9 @@ public class Orders {
     @Column(name = "symbol")
     private String symbol;
 
+    @Column(name = "time_after_10_secs")
+    private String timeAfterTenSecs;
+
     public Instant getTime() {
         return time;
     }
@@ -83,5 +86,13 @@ public class Orders {
 
     public void setSymbol(String symbol) {
         this.symbol = symbol;
+    }
+
+    public String getTimeAfterTenSecs() {
+        return timeAfterTenSecs;
+    }
+
+    public void setTimeAfterTenSecs(String timeAfterTenSecs) {
+        this.timeAfterTenSecs = timeAfterTenSecs;
     }
 }
